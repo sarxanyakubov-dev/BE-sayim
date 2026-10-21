@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stok sayımı</title>
+<style>
+:root{--bg:#f0f2f6;--card:#fff;--fg:#1b2230;--mut:#677389;--bd:#e1e5ed;--nav:#1f2a3d;--nav2:#34445f;--acc:#e3202e;--ok:#12804a;--okb:#e2f6ea;--bad:#c62828;--badb:#fdeaea;--cur:#fff3c4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0e1320;--card:#171e2e;--fg:#e8ecf4;--mut:#94a0b6;--bd:#26304a;--nav:#0a0f1b;--nav2:#1a2540;--okb:#12301f;--ok:#4ade80;--badb:#3a1618;--bad:#f87171;--cur:#3a3114}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0e1320;--card:#171e2e;--fg:#e8ecf4;--mut:#94a0b6;--bd:#26304a;--nav:#0a0f1b;--nav2:#1a2540;--okb:#12301f;--ok:#4ade80;--badb:#3a1618;--bad:#f87171;--cur:#3a3114}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--nav);z-index:30}
+.bar{background:linear-gradient(135deg,var(--nav),var(--nav2));color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:-0px}
+.brand{display:flex;align-items:center;gap:10px;flex:1 1 170px}
+.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,#ff4a58,var(--acc));display:grid;place-items:center;font-weight:800;font-size:16px;letter-spacing:.5px;box-shadow:0 0 0 3px rgba(255,255,255,.18)}
+h1{font-size:18px;margin:0;line-height:1.1}.brand span{font-size:12px;opacity:.72}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+button,select,input{font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:11px;padding:9px 11px;min-width:0;outline:none}
+input:focus,select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(227,32,46,.16)}
+button{cursor:pointer;font-weight:600;transition:transform .08s}button:active{transform:scale(.96)}
+.bar button{background:rgba(255,255,255,.13);color:#fff;border-color:rgba(255,255,255,.2);padding:8px 11px;font-size:13px}
+.pri{background:var(--acc)!important;color:#fff!important;border-color:var(--acc)!important}
+.nv{background:var(--nav)!important;color:#fff!important;border-color:var(--nav)!important}
+#panel{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);padding:10px max(12px,calc((100% - 876px)/2)) 10px;display:grid;gap:8px;box-shadow:0 8px 14px -12px rgba(0,0,0,.45)}
+.r,.r2{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.r2{flex-wrap:nowrap}.r2>*{flex:1 1 0}
+.srch{display:flex;gap:8px}#s{flex:1;font-size:16px;padding:13px 14px}#q{width:78px;flex:none;text-align:center;font-size:17px;font-weight:700}
+.big{flex:2!important;font-size:17px;padding:13px}
+.sm{font-size:13px;color:var(--mut)}
+#sl{font-size:13px;color:var(--ok);background:var(--okb);padding:7px 11px;border-radius:9px;font-weight:600}
+#sg{max-height:36vh;overflow:auto;border:1px solid var(--bd);border-radius:12px;display:grid;background:var(--card);box-shadow:0 8px 22px -10px rgba(0,0,0,.4)}
+#sg button{text-align:left;border:0;border-bottom:1px solid var(--bd);border-radius:0;background:transparent;padding:10px 12px;font-weight:500}#sg b{font-weight:700}#sg small{display:block;color:var(--mut)}
+#sg:empty,#sl:empty{display:none}
+main{max-width:900px;margin:auto;padding:10px 12px 100px;display:grid;gap:10px}
+#pbw{height:9px;background:var(--bd);border-radius:99px;overflow:hidden}#pb{height:100%;width:0;background:linear-gradient(90deg,var(--acc),#ff7a6b);transition:width .3s}
+#sum{display:flex;gap:6px;flex-wrap:wrap}.pill{background:var(--card);border:1px solid var(--bd);border-radius:99px;padding:3px 11px;font-size:13px;color:var(--mut)}.pill b{color:var(--fg)}.pill.ok b{color:var(--ok)}.pill.bad b{color:var(--bad)}
+.seg{display:flex;background:var(--card);border:1px solid var(--bd);border-radius:13px;padding:3px;gap:2px}.seg .ch{flex:1;border:0;background:transparent;padding:8px 2px;font-size:13px;color:var(--mut);border-radius:10px}.seg .ch.on{background:var(--nav);color:#fff}
+details.st{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:9px 12px;font-size:13px;color:var(--mut)}details.st .r2{margin-top:8px}
+#ls{display:grid;gap:9px}#mo{width:100%}
+.it{background:var(--card);border:1px solid var(--bd);border-radius:15px;padding:12px 13px 12px 17px;display:flex;gap:10px;align-items:center;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(20,30,50,.06)}
+.it::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--bd)}.it.ok::before{background:var(--ok)}.it.bad::before{background:var(--bad)}
+.it.fl{animation:f .9s}@keyframes f{from{background:var(--cur)}}
+.inf{flex:1;min-width:0}.inf b{font-size:16px;display:block;letter-spacing:.2px}
+.nmx{color:var(--mut);font-size:13px;margin:1px 0 6px;word-break:break-word}
+.tg{display:flex;gap:4px;flex-wrap:wrap}.tg i{font-style:normal;font-size:11px;background:var(--bg);border:1px solid var(--bd);color:var(--mut);padding:1px 8px;border-radius:99px}.tg i.sr{color:#2563eb;border-color:#2563eb55}
+.nm{text-align:center;font-size:12px;color:var(--mut);flex:none}
+.cn{font-size:25px;font-weight:800;min-width:72px;padding:6px 10px;border-radius:12px;display:block;margin:3px auto 0;background:var(--bg)}
+.ok .cn{color:var(--ok);background:var(--okb);border-color:transparent}.bad .cn{color:var(--bad);background:var(--badb);border-color:transparent}
+.df{font-weight:700;color:var(--bad)}
+#t{position:fixed;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));background:var(--nav);color:#fff;padding:11px 14px;border-radius:14px;display:none;justify-content:space-between;gap:8px;align-items:center;z-index:60;max-width:860px;margin:auto;box-shadow:0 10px 30px -8px rgba(0,0,0,.5)}
+#t button{background:rgba(255,255,255,.18);color:#fff;border:0;padding:7px 12px}
+.em{text-align:center;color:var(--mut);padding:34px 10px}
+#ak{position:fixed;inset:0;background:var(--bg);z-index:50;display:none;overflow:auto;padding-top:env(safe-area-inset-top,0px)}
+.akh{position:sticky;top:0;z-index:2;background:var(--nav);color:#fff;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.akh button{padding:8px 12px}
+.akb{max-width:900px;margin:auto;padding:10px 12px 60px;display:grid;gap:8px;grid-template-columns:minmax(0,1fr)}
+textarea{font:inherit;width:100%;border:1px solid var(--bd);border-radius:11px;padding:10px;background:var(--card);color:var(--fg)}
+#al{display:grid;gap:8px;grid-template-columns:minmax(0,1fr)}.ac{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px 12px;display:grid;gap:8px;grid-template-columns:minmax(0,1fr)}.ac input{width:100%}.ac b{overflow-wrap:anywhere}
+html,body{max-width:100%;overflow-x:hidden}
+#panel,main,#ls,#sg{grid-template-columns:minmax(0,1fr)}
+select,input{max-width:100%;text-overflow:ellipsis}
+.r2>*,.srch>*,.bar *{min-width:0}
+#panel .r2 select,details input{width:100%}
+.inf,.inf b,.nmx,.tg{overflow-wrap:anywhere;min-width:0}
+.seg .ch{padding-inline:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:480px){.acts{width:100%}.acts button{flex:1;padding:8px 4px;font-size:12.5px}#panel{padding-inline:10px}main{padding-inline:10px}.big{font-size:16px;padding:12px 6px}.r2 button{padding-inline:6px}.cn{min-width:60px;font-size:22px}.it{padding:11px 10px 11px 15px;gap:8px}}
+#sv{position:fixed;inset:0;background:rgba(5,8,15,.92);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:35;padding:10px;color:#fff}#rd{position:relative;width:min(100%,460px);border-radius:14px;overflow:hidden;background:#000}#vd{width:100%;max-height:62vh;object-fit:cover;display:block}#gd{position:absolute;left:4%;right:4%;top:25%;bottom:25%;border:2px solid #ff4655;border-radius:8px;box-shadow:0 0 0 999px rgba(0,0,0,.38);pointer-events:none}
+dialog{border:1px solid var(--bd);border-radius:16px;background:var(--card);color:var(--fg);width:min(92vw,420px);padding:16px}dialog::backdrop{background:rgba(0,0,0,.55)}dialog label{display:block;font-size:12px;color:var(--mut);margin-top:9px}dialog input,dialog select{width:100%}
+
+.bar{border-bottom:3px solid var(--acc)}#mn{flex:none;padding:7px 13px;font-size:19px;line-height:1}#sd{white-space:nowrap}
+#mw{position:fixed;inset:0;z-index:50;background:rgba(5,8,15,.5);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}#mw[hidden]{display:none}
+#mp{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);right:10px;left:10px;max-width:380px;margin-left:auto;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:12px;display:grid;gap:7px;grid-template-columns:minmax(0,1fr);box-shadow:0 24px 48px -12px rgba(0,0,0,.55);max-height:calc(100vh - 30px);overflow:auto}
+#mp button{text-align:left;width:100%;padding:12px 13px}#mp .dg{color:var(--bad);border-color:var(--badb)}#mp hr{border:0;border-top:1px solid var(--bd);margin:2px 0;width:100%}
+#mp label{font-size:12px;color:var(--mut);display:grid;gap:3px}#mp input{width:100%}.mh{display:flex;justify-content:space-between;align-items:center}.mh button{width:auto!important;padding:6px 11px!important}
+#mgl{line-height:1.7}
+#wh{width:100%;font-weight:600}
+</style>
+</head>
+<body>
+<div class="bar"><div class="brand"><div class="logo">BE</div><div><h1>Stok sayımı</h1><span id="sub">Baku Electronics</span></div></div><div class="acts"><button id="sd" class="pri">📤 Sayımı göndər</button><button id="mn" aria-label="Menyu">☰</button></div></div>
+<div id="mw" hidden><div id="mp">
+<div class="mh"><b>Menyu</b><button id="mx">✕</button></div>
+<button id="bl">📥 Baza yüklə (fiziki inventar)</button>
+<button id="bs">🔢 Seriya (seri bilgiler girişdə olan)</button>
+<button id="bb">🏷 Barkod (stok məlumat)</button>
+<hr>
+<button id="ak0">📄 Fərqlər aktı</button>
+<button id="ex">⬇ Excel export (sayım aktı)</button>
+<hr>
+<button id="rc">📥 Sayımı qəbul et (JSON birləşdir)</button>
+<div id="mgl" class="sm"></div>
+<hr>
+
+<div class="r2"><label>Filial<input id="fl"></label><label>Tarix<input id="dt" type="date"></label></div>
+<label hidden><input id="ia" type="checkbox"></label>
+<hr>
+<button id="rs" class="dg">⟲ Bütün sayımı sıfırla</button>
+</div></div>
+<section id="panel">
+ <input id="wh" placeholder="👤 Məsul şəxs" autocomplete="name"><div class="r2"><select id="dp"></select><select id="ct"></select></div>
+ <div class="srch"><input id="s" placeholder="Kod / ad / barkod / seriya" autocomplete="off" enterkeyhint="done"><input id="q" type="number" step="any" min="0" value="1" title="Miqdar"></div>
+ <div class="r2"><button id="sy" class="pri big">Say</button><button id="sc" class="nv">📷 Skan</button><button id="ax">+ Artıq</button></div>
+ <div id="sl"></div><div id="sg"></div>
+</section>
+<main>
+ <div id="pbw"><div id="pb"></div></div><div id="sum"></div>
+ <div class="seg"><button class="ch on" data-f="ct">Sayılanlar</button><button class="ch" data-f="un">Sayılmayan</button><button class="ch" data-f="df">Fərqli</button><button class="ch" data-f="all">Hamısı</button></div>
+ <div id="ls"></div>
+</main>
+<div id="ak"><div class="akh"><b>Sayım fərqi aktı</b><div class="r"><button id="akx" class="pri">⬇ Excel</button><button id="akc">Bağla</button></div></div><div class="akb"><div id="as" class="sm"></div><textarea id="gn" rows="2" placeholder="Ümumi qeyd (aktın altında çıxacaq)"></textarea><div id="al"></div></div></div>
+<div id="t"><span id="tm"></span><button id="ud">Geri al</button></div>
+<div id="sv"><div id="rd"><video id="vd" playsinline muted></video><div id="gd"></div></div><div class="sm" style="color:#ddd">Barkodu çərçivəyə tutun, hər oxunuş +1 əlavə edir. Kiçik barkod üçün zoom edin</div><input id="zm" type="range" style="display:none;width:min(80%,320px)"><div class="r"><button id="tc" style="display:none">🔦 Fənər</button><button id="ph">🖼 Şəkildən oxu</button><button id="sx">Bağla</button></div><input id="pf" type="file" accept="image/*" capture="environment" hidden></div>
+<dialog id="xd"><b>Stokda olmayan (artıq) məhsul</b>
+<label>Stok kodu</label><input id="xc"><label>Barkod</label><input id="xb"><label>Ad (ixtiyari)</label><input id="xn"><label>Ambar</label><select id="xp"></select><label>Kateqoriya</label><select id="xk"></select><label>Say</label><input id="xq" type="number" step="any" min="0" value="1">
+<div class="r" style="margin-top:12px"><button id="xs" class="pri" style="flex:1">Əlavə et</button><button id="xx">Ləğv</button></div></dialog>
+<input id="fi" type="file" accept=".xlsx,.xls" hidden><input id="fi2" type="file" accept=".xlsx,.xls" hidden><input id="fi3" type="file" accept=".xlsx,.xls" hidden><input id="fi4" type="file" accept=".json,application/json" multiple hidden>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
+<script>
+const LOGO="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";
+const SH=["122-01","122-03,04,06","İT","Mobil","Smart saat","Aksesuar","Skin","Böyük ev avadanlığı","TV","Kiçik ev avadanlıqları","Hədiyyə Kartları","Gaming and Transport"];
+const $=i=>document.getElementById(i);
+let base=[],cnt={},hist=[],ts={},ser={},sr={},notes={},mg=[],flt="ct",meta={fl:"Xacmaz",dt:new Date().toISOString().slice(0,10),ia:false},lim=80;
+function sheetOf(d,a1,a2,a3){
+ if(d=="122-01")return SH[0]; if(d!="122-02")return SH[1];
+ if(a1=="IT")return"İT"; if(a2=="Phones &Tabs")return"Mobil"; if(a2=="Gadgets")return"Smart saat";
+ if(a2=="Car"||/^Gaming/.test(a1))return"Gaming and Transport";
+ if(a1=="Accessories")return/skin/i.test(a3)?"Skin":"Aksesuar";
+ if(a1=="Home Appliances")return"Böyük ev avadanlığı"; if(a1=="TV And AV")return"TV";
+ if(a1=="Small Home Appliances")return"Kiçik ev avadanlıqları"; return"Hədiyyə Kartları";
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fm=x=>+(+x).toFixed(2);
+const V=v=>v==null?"":typeof v=="object"?(v.result??v.text??(v.richText?v.richText.map(t=>t.text).join(""):"")):v;
+function save(){try{localStorage.setItem("sy1",JSON.stringify({base,cnt,ts,ser,sr,notes,mg,meta}))}catch(e){}}
+function restore(){try{const o=JSON.parse(localStorage.getItem("sy1")||"null");if(o){base=o.base||[];cnt=o.cnt||{};ts=o.ts||{};ser=o.ser||{};sr=o.sr||{};notes=o.notes||{};mg=o.mg||[];meta=Object.assign(meta,o.meta||{})}}catch(e){}}
+function toast(m,u){$("tm").textContent=m;$("ud").style.display=u?"":"none";$("t").style.display="flex";clearTimeout(toast.h);toast.h=setTimeout(()=>$("t").style.display="none",u?6000:3500)}
+function opts(){
+ const ds=[...new Map(base.map(r=>[r.d,r.dn])).entries()].sort();
+ const dv=$("dp").value,cv=$("ct").value;
+ $("dp").innerHTML='<option value="">Bütün ambarlar</option>'+ds.map(([d,n])=>`<option value="${esc(d)}">${esc(d)} · ${esc(String(n).replace(/^.*?-\s*/,""))}</option>`).join("");
+ const cs=cats();
+ $("ct").innerHTML='<option value="">Bütün kateqoriyalar</option>'+cs.map(s=>`<option>${esc(s)}</option>`).join("");
+ $("dp").value=dv;$("ct").value=cv;
+}
+function list(g){
+ const d=$("dp").value,c=$("ct").value,s=g?$("s").value.trim().toLowerCase():"";
+ const a=base.filter(r=>(!d||r.d==d)&&(!c||r.sh==c)&&(!s||(r.c+" "+r.n+" "+(r.b||"")).toLowerCase().includes(s))&&(s||flt=="all"||(flt=="ct"?cnt[r.k]!=null:flt=="un"?cnt[r.k]==null:(cnt[r.k]!=null&&cnt[r.k]!=r.q))));
+ return flt=="ct"&&!s?a.sort((x,y)=>(ts[y.k]||0)-(ts[x.k]||0)):a;
+}
+function render(){
+ const a=list();renderSug();
+ const st={},sd={};Object.values(sr).forEach(s=>{const k=s.d+"|"+s.c;st[k]=(st[k]||0)+1});Object.values(ser).forEach(k=>sd[k]=(sd[k]||0)+1);
+ const d=$("dp").value,c=$("ct").value,sc=base.filter(r=>(!d||r.d==d)&&(!c||r.sh==c));
+ const n=sc.filter(r=>cnt[r.k]!=null).length,ok=sc.filter(r=>cnt[r.k]!=null&&cnt[r.k]==r.q).length;
+ $("sum").innerHTML=`<span class="pill">Sayılan <b>${n}/${sc.length}</b></span><span class="pill ok">Uyğun <b>${ok}</b></span><span class="pill bad">Fərqli <b>${n-ok}</b></span>`;$("pb").style.width=(sc.length?n/sc.length*100:0)+"%";$("sub").textContent=`${meta.fl} · ${dmy(meta.dt)}${bm2.size?` · barkod ${bm2.size}`:""}`;
+ if(!base.length){$("ls").innerHTML='<div class="em">Baza yoxdur. «Baza yüklə» düyməsi ilə fiziki inventar Excel faylını seçin.</div>';return}
+ $("ls").innerHTML=a.slice(0,lim).map(r=>{const v=cnt[r.k],sx=v==null?"":v==r.q?"ok":"bad";
+  return `<div class="it ${sx}" data-k="${esc(r.k)}"><div class="inf"><b>${esc(r.c)}</b><div class="nmx">${esc(r.n||"—")}</div><div class="tg"><i>${esc(r.d)}</i><i>${esc(r.sh)}</i>${r.b?`<i>${esc(r.b)}</i>`:""}${st[r.k]?`<i class="sr">seriya ${sd[r.k]||0}/${st[r.k]}</i>`:""}${r.x?"<i>bazada yox</i>":""}</div></div><div class="nm">Stok ${fm(r.q)}<button class="cn" data-a="set">${v==null?"–":fm(v)}</button>${v!=null&&v!=r.q?`<span class="df">Fərq ${v-r.q>0?"+":""}${fm(v-r.q)}</span>`:""}</div></div>`
+}).join("")+(a.length>lim?`<button id="mo">Daha çox göstər (${a.length-lim})</button>`:"")+(a.length?"":`<div class="em">${flt=="ct"&&!$("s").value?"Hələ sayılan məhsul yoxdur. Kod və ya barkod yazıb «Say» basın.":"Nəticə yoxdur"}</div>`);
+}
+const Q=()=>Math.max(0,parseFloat($("q").value))||1;
+function add(k,n,sn){
+ cnt[k]=Math.max(0,fm((cnt[k]||0)+n));ts[k]=Date.now();hist.push([k,n,sn]);save();
+ const r=base.find(x=>x.k==k);render();
+ const e=document.querySelector(`[data-k="${CSS.escape(k)}"]`);if(e)e.classList.add("fl");
+ toast(`${r.c}: ${n>0?"+":""}${fm(n)} → ${fm(cnt[k])}`,true);
+}
+function undo(){const h=hist.pop();if(!h)return toast("Geri alınacaq əməliyyat yoxdur");const[k,n,sn]=h;if(sn)delete ser[sn];cnt[k]=fm((cnt[k]||0)-n);if(cnt[k]<=0&&n>0&&!hist.some(x=>x[0]==k))delete cnt[k];save();render();toast("Geri alındı")}
+function submit(){
+ let raw=$("s").value.trim();if(!raw)return;
+ if(bySerial(raw)){$("s").value="";$("q").value=1;render();return}
+ const ob=raw,bm=byBc(raw);if(bm){raw=bm.c;$("s").value=raw}
+ const q=raw.toLowerCase();
+ const a=list(1),ex=a.filter(r=>r.c.toLowerCase()==q||String(r.b||"").toLowerCase()==q),t=ex.length==1?ex[0]:a.length==1?a[0]:null;
+ if(t){add(t.k,Q());$("s").value="";$("q").value=1;render();return}
+ if(a.length>1)return toast("Bir neçə nəticə var — ambar/kateqoriya seçin və ya dəqiqləşdirin");
+ openX(raw);if(bm){$("xn").value=bm.n;$("xb").value=ob!=raw?ob:"";$("xc").value=bm.c;const ct=catOf({g:bm.g,n:bm.n});if(CATS.includes(ct))$("xk").value=ct}return"new";
+}
+const shn=s=>String(s||"").replace(/[\\\/?*\[\]:]/g,"-").trim().slice(0,31)||"Digər";
+const CATS=["Mobil/tablet","Böyük məişət avadanlıqları","Kiçik məişət avadanlıqları","İT","Üzlüklər","Aksesuar","Qulaqlıqlar","Saatlar","Hədiyyə kartları","Gaming","Tv və audio"];
+function catOf(r){const[a1="",a2="",a3="",a4=""]=r.g,n=r.n||"";
+ if(a4=="Gift Card")return"Hədiyyə kartları";
+ if(a4=="Screen Protector"||/^skin\b/i.test(n))return"Üzlüklər";
+ if(/^Headphone/i.test(a4))return"Qulaqlıqlar";
+ if(a3=="Watches"||/smartwa[tc]?ch band/i.test(a4))return"Saatlar";
+ if(/writing\s*tablet|lcd.*(tablet|lövhə|board)/i.test(n))return"Mobil/tablet";
+ if(a3=="Dect Phone"||a1=="IT")return"İT";
+ if(a2=="Phones &Tabs")return"Mobil/tablet";
+ if(a1=="Home Appliances")return"Böyük məişət avadanlıqları";
+ if(a1=="Small Home Appliances")return"Kiçik məişət avadanlıqları";
+ if(/^Gaming/.test(a1))return"Gaming";
+ if(a1=="TV And AV")return"Tv və audio";
+ return"Aksesuar"}
+function setLv(){base.forEach(r=>{if(!r.x&&r.g)r.sh=catOf(r)})}
+function cats(){const s=new Set(base.map(r=>r.sh));return[...CATS.filter(c=>s.has(c)),...[...s].filter(c=>!CATS.includes(c))]}
+function openX(code){
+ const ds=[...new Set(["122-01","122-02","122-03","122-06","122-07",...base.map(r=>r.d)])].sort();
+ $("xp").innerHTML=ds.map(d=>`<option>${esc(d)}</option>`).join("");$("xp").value=$("dp").value||"122-02";
+ $("xk").innerHTML=CATS.map(s=>`<option>${esc(s)}</option>`).join("");if(CATS.includes($("ct").value))$("xk").value=$("ct").value;
+ const bc=/^\d{8,}$/.test(code);$("xc").value=code||"";$("xb").value=bc?code:"";$("xn").value="";$("xq").value=Q();
+ try{$("xd").showModal()}catch(e){$("xd").setAttribute("open","")}
+}
+$("xx").onclick=()=>$("xd").close();
+$("xs").onclick=()=>{
+ const b=$("xb").value.trim(),c=$("xc").value.trim()||b;if(!c)return toast("Kod və ya barkod yazın");
+ const d=$("xp").value,sh=$("xk").value||"Digər",k=d+"|"+c;
+ if(!base.find(x=>x.k==k))base.push({k,d,dn:(base.find(x=>x.d==d)||{}).dn||d,c,b,n:$("xn").value.trim(),q:0,sh,x:1});
+ const n=Math.max(0,parseFloat($("xq").value))||1;$("xd").close();$("s").value="";$("q").value=1;opts();add(k,n);
+};
+$("ax").onclick=()=>openX($("s").value.trim());
+let sel=null,sc=null,lastC="",lastT=0;
+function renderSug(){
+ const g=$("sg"),s=$("s").value.trim();
+ if(!s||sel){g.innerHTML="";return}
+ g.innerHTML=list(1).slice(0,8).map(r=>`<button data-sk="${esc(r.k)}"><b>${esc(r.c)}</b><small>${r.n?esc(r.n)+" · ":""}${r.b?esc(r.b)+" · ":""}${esc(r.d)} · stok ${fm(r.q)}</small></button>`).join("")||'<div class="em" style="padding:10px">Tapılmadı. «+ Artıq» ilə əlavə edin</div>';
+}
+function pick(k){const r=base.find(x=>x.k==k);if(!r)return;sel=k;$("s").value=r.c;$("sl").textContent=`Seçildi: ${r.n||r.c} · stok ${fm(r.q)} — sayı yazıb «Say» basın`;$("sg").innerHTML="";$("q").value=1;$("q").focus();$("q").select()}
+function doSay(){if(!sel)return submit();const k=sel;sel=null;$("s").value="";$("sl").textContent="";add(k,Q());$("q").value=1;$("s").focus()}
+let stream=null,vid=$("vd"),cv=document.createElement("canvas"),ctx=cv.getContext("2d",{willReadFrequently:true}),fr=0,det=null,zr=null,busy=false,tor=false;
+const FMT=["code_128","code_39","code_93","ean_13","ean_8","upc_a","upc_e","itf","codabar","qr_code","data_matrix"];
+function mkDec(){
+ if(window.BarcodeDetector&&!det){try{det=new BarcodeDetector({formats:FMT})}catch(e){try{det=new BarcodeDetector()}catch(x){}}}
+ if(window.ZXing&&!zr){const Z=ZXing,h=new Map(),B=Z.BarcodeFormat;h.set(Z.DecodeHintType.TRY_HARDER,true);h.set(Z.DecodeHintType.POSSIBLE_FORMATS,[B.CODE_128,B.CODE_39,B.CODE_93,B.EAN_13,B.EAN_8,B.UPC_A,B.UPC_E,B.ITF,B.CODABAR,B.QR_CODE,B.DATA_MATRIX]);zr=new Z.MultiFormatReader();zr.setHints(h)}
+}
+function levels(w,h,ch){
+ const id=ctx.getImageData(0,0,w,h),d=id.data,g=i=>ch<0?d[i]*.3+d[i+1]*.59+d[i+2]*.11:d[i+ch];let lo=255,hi=0;
+ for(let i=0;i<d.length;i+=16){const v=g(i);if(v<lo)lo=v;if(v>hi)hi=v}
+ const k=hi>lo?255/(hi-lo):1;
+ for(let i=0;i<d.length;i+=4){const v=Math.max(0,Math.min(255,(g(i)-lo)*k));d[i]=d[i+1]=d[i+2]=v}
+ ctx.putImageData(id,0,0);
+}
+async function dec(){
+ if(det){try{const r=await det.detect(cv);if(r.length)return r[0].rawValue}catch(e){}}
+ if(!det&&zr){try{const Z=ZXing;return zr.decode(new Z.BinaryBitmap(new Z.HybridBinarizer(new Z.HTMLCanvasElementLuminanceSource(cv)))).getText()}catch(e){}}
+ return null;
+}
+async function tick(){
+ if(!stream)return;
+ if(!busy&&vid.videoWidth){busy=true;try{
+  fr++;let t=null;
+  if(det){try{const r=await det.detect(vid);if(r.length)t=r[0].rawValue}catch(e){}}
+  if(!t&&(!det||fr%3==0)){
+   const k=det?(fr/3)%4:fr%4,vw=vid.videoWidth,vh=vid.videoHeight,z=k>1,sw=z?vw/2:vw,sh=z?vh*.25:vh*.5,sx=z?vw/4:0,sy=z?vh*.375:vh*.25,ow=Math.round(Math.min(det?1280:900,z?sw*2:sw));
+   cv.width=ow;cv.height=Math.round(sh*ow/sw);ctx.drawImage(vid,sx,sy,sw,sh,0,0,cv.width,cv.height);
+   if(k)levels(cv.width,cv.height,k==3?-1:0);
+   t=await dec();
+  }
+  if(t)onScan(t);
+ }catch(e){}busy=false}
+ requestAnimationFrame(tick);
+}
+async function scan(){
+ mkDec();if(!det&&!zr)return toast("Skaner kitabxanası yüklənmədi");
+ $("sv").style.display="flex";
+ try{
+  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},audio:false});
+  vid.srcObject=stream;await vid.play();camTools();fr=0;tick();
+ }catch(e){await stopScan();toast("Kamera açılmadı. İcazə verin və ya səhifəni birbaşa brauzerdə açın")}
+}
+async function stopScan(){const s=stream;stream=null;try{s&&s.getTracks().forEach(t=>t.stop())}catch(e){}vid.srcObject=null;$("sv").style.display="none";tor=false}
+function camTools(){try{const t=stream.getVideoTracks()[0],c=t.getCapabilities?t.getCapabilities():{};
+ if(c.focusMode&&c.focusMode.includes("continuous"))t.applyConstraints({advanced:[{focusMode:"continuous"}]}).catch(()=>{});
+ if(c.zoom){const v=Math.min(c.zoom.max,Math.max(c.zoom.min,2));$("zm").min=c.zoom.min;$("zm").max=c.zoom.max;$("zm").step=c.zoom.step||.1;$("zm").value=v;$("zm").style.display="";t.applyConstraints({advanced:[{zoom:v}]}).catch(()=>{})}else $("zm").style.display="none";
+ $("tc").style.display=c.torch?"":"none"}catch(e){}}
+const adv=o=>{try{stream.getVideoTracks()[0].applyConstraints({advanced:[o]}).catch(()=>{})}catch(e){}};
+$("zm").oninput=()=>adv({zoom:+$("zm").value});
+$("tc").onclick=()=>{tor=!tor;adv({torch:tor})};
+$("ph").onclick=()=>$("pf").click();
+$("pf").onchange=async e=>{const f=e.target.files[0];e.target.value="";if(!f)return;mkDec();
+ try{const b=await createImageBitmap(f),sc=Math.min(1,2600/b.width);cv.width=Math.round(b.width*sc);cv.height=Math.round(b.height*sc);
+  for(const ch of[null,0,-1]){ctx.drawImage(b,0,0,cv.width,cv.height);if(ch!==null)levels(cv.width,cv.height,ch);const t=await dec();if(t)return onScan(t)}
+  toast("Şəkildə barkod tapılmadı. Daha yaxın və işıqda çəkin")}catch(x){toast("Şəkil oxunmadı")}};
+$("sy").onclick=doSay;$("sc").onclick=scan;$("sx").onclick=stopScan;
+function beep(){try{const a=new(window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator();o.frequency.value=900;o.connect(a.destination);o.start();setTimeout(()=>{o.stop();a.close()},90)}catch(e){}}
+function onScan(t){t=String(t).trim();const n=Date.now();if(t==lastC&&n-lastT<1800)return;lastC=t;lastT=n;sel=null;$("sl").textContent="";$("s").value=t;if(submit()=="new")stopScan();else{$("s").value="";$("q").value=1;render()}if(navigator.vibrate)navigator.vibrate(60);beep()}
+function bySerial(raw){
+ const key=raw.trim().toUpperCase(),s=sr[key];if(!s)return false;
+ if(ser[key]){toast(`Seriya artıq sayılıb: ${s.c}`);return true}
+ const r=base.find(x=>x.k==s.d+"|"+s.c)||base.find(x=>x.c==s.c);
+ if(!r){openX(s.c);$("xn").value=s.n;$("xp").value=s.d;return true}
+ ser[key]=r.k;add(r.k,1,key);return true;
+}
+async function loadSer(f){
+ try{const wb=new ExcelJS.Workbook();await wb.xlsx.load(await f.arrayBuffer());const ws=wb.worksheets[0],h=[];
+  ws.getRow(1).eachCell((c,i)=>h.push([i,String(V(c.value)).trim().toLowerCase()]));
+  const col=re=>h.filter(x=>re.test(x[1])).map(x=>x[0]),S=col(/^seri\s*num/),C=col(/^stok\s*kod/)[0],N=col(/^stok\s*ad/)[0],D=col(/^depo\s*kod/)[0];
+  if(!S.length||!C)throw new Error("Seri Numarasi / Stok Kodu sütunu tapılmadı");
+  const m={};let n=0;
+  ws.eachRow((r,i)=>{if(i<2)return;const c=String(V(r.getCell(C).value)).trim(),d=D?String(V(r.getCell(D).value)).trim():"122-02";if(!c)return;
+   S.forEach(si=>{const s=String(V(r.getCell(si).value)).trim().toUpperCase();if(s){m[s]={c,d,n:N?String(V(r.getCell(N).value)):""};n++}})});
+  sr=m;ser=Object.fromEntries(Object.entries(ser).filter(([s])=>m[s]));save();render();toast(`Seriya yükləndi: ${n} nömrə`);
+ }catch(e){toast("Xəta: "+e.message)}
+}
+$("bs").onclick=()=>$("fi2").click();$("fi2").onchange=e=>{if(e.target.files[0])loadSer(e.target.files[0]);e.target.value=""};
+function aktRows(){const d=$("dp").value,c=$("ct").value,sc=base.filter(r=>(!d||r.d==d)&&(!c||r.sh==c)),cs=new Set(sc.filter(r=>cnt[r.k]!=null).map(r=>r.d+"|"+r.sh));return sc.filter(r=>cs.has(r.d+"|"+r.sh)&&fm((cnt[r.k]||0)-r.q)!=0).sort((a,b)=>a.d.localeCompare(b.d)||(a.n||a.c).localeCompare(b.n||b.c,"az"))}
+function aktRender(){
+ const rs=aktRows();let e=0,a=0;rs.forEach(r=>{const d=fm(r.q-(cnt[r.k]||0));d>0?e+=d:a-=d});
+ $("as").textContent=`${rs.length} sətir · əksik ${fm(e)} · artıq ${fm(a)} · fərq = sistem − faktiki`;
+ $("al").innerHTML=rs.map(r=>{const c=cnt[r.k]||0,d=fm(r.q-c);return `<div class="ac"><div><b>${esc(r.c)}</b><div class="nmx">${esc(r.n||"—")}</div><div class="tg"><i>${esc(r.d)}</i><i>Sistem ${fm(r.q)}</i><i>Faktiki ${fm(c)}</i><i class="df">Fərq ${d>0?"+":""}${d}</i></div></div><input data-nk="${esc(r.k)}" value="${esc(notes[r.k]||"")}" placeholder="${d>0?"Əksik":"Artıq"} — qeyd yazın"></div>`}).join("")||'<div class="em">Fərq yoxdur</div>';
+}
+function mkAkt(wb,rows,img){
+ const ws=wb.addWorksheet("Fərq aktı",{views:[{showGridLines:false}],pageSetup:{paperSize:9,orientation:"landscape",fitToPage:true,fitToWidth:1,fitToHeight:0,printTitlesRow:"9:9",margins:{left:.24,right:.24,top:.65,bottom:.6,header:.28,footer:.28}},headerFooter:{oddHeader:"&L&F&C&A",oddFooter:"&C&P / &N"}});
+ ws.columns=[6,9,26,60,12,12,9,34].map(width=>({width}));
+ [4,5,6,7].forEach((r,i)=>ws.getRow(r).height=[14.25,18,18,14.25][i]);ws.getRow(9).height=33.75;
+ ws.mergeCells("D1:H3");ws.mergeCells("A5:C5");ws.mergeCells("A6:C6");ws.mergeCells("D5:H7");
+ const t=ws.getCell("D1");t.value="Həftəlik və Aylıq sayım fərqi aktı";t.font={name:TN,size:13,bold:true,color:{argb:"FFFFFFFF"}};t.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF333F50"}};t.alignment={horizontal:"center",vertical:"middle"};
+ const a5=ws.getCell("A5");a5.value="Filial: "+meta.fl;a5.font={name:TN,size:14,bold:true};a5.alignment={vertical:"middle",indent:1};
+ const a6=ws.getCell("A6");a6.value="Tarix: "+dmy(meta.dt);a6.font=a5.font;a6.alignment=a5.alignment;
+ const R={name:TN,size:12,bold:true,color:{argb:"FFFF0000"}},K={name:TN,size:12};
+ const n=ws.getCell("D5");n.value={richText:[{text:"Qeyd : ",font:R},{text:"Mağazanın həftəlik və aylıq sayımında aşkarlanmış fərqlər bu forma üzərindən aktlaşdırılmalıdır. Retail Audit yoxlaması zamanı uyğunsuzluq ",font:K},{text:"(tarixsiz,imzasız)",font:R},{text:" aşkarlanarsa qeydə alınmayacaq.",font:K}]};n.alignment={horizontal:"left",vertical:"middle",wrapText:true};
+ edges(ws,1,1,7,8,"medium","FF000000");edges(ws,5,4,7,8,"medium","FFFF0000");
+ ["Sıra №","Depo kodu","Malın kodu","Malın adı","Sistem üzrə qalıq","Faktiki qalıq","Fərq","Mağaza Qeydi"].forEach((h,i)=>{const c=ws.getCell(9,i+1);c.value=h;c.font={name:TN,size:10,bold:true};c.border=TB;c.alignment={horizontal:"center",vertical:"middle",wrapText:true};c.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FFD9D9D9"}}});
+ rows.forEach((x,i)=>{const r=10+i,f=cnt[x.k]||0,d=fm(x.q-f),row=ws.getRow(r);row.height=15.75;
+  row.values=[i+1,x.d,x.c,x.n,x.q,f,{formula:`E${r}-F${r}`,result:d},(notes[x.k]||"").trim()||(d>0?"Əksik":"Artıq")];
+  for(let c=1;c<=8;c++){const e=ws.getCell(r,c);e.border=TB;e.font={name:"Arial",size:10};e.alignment=c==4||c==8?{vertical:"middle",wrapText:c==8}:{horizontal:"center",vertical:"middle"}}});
+ let L=9+rows.length;
+ if((meta.gn||"").trim()){L+=2;ws.mergeCells(L,1,L,8);const g=ws.getCell(L,1);g.value="Qeyd: "+meta.gn.trim();g.font={name:TN,size:11};g.alignment={wrapText:true,vertical:"top"};ws.getRow(L).height=Math.max(30,Math.ceil(meta.gn.length/140)*16)}
+ const s=L+3;["MƏMT :","MSM :","SM :"].forEach((tx,i)=>{const a=ws.getCell(s+i*3,3);a.value=tx;a.font={name:TN,size:12};a.alignment={horizontal:"right",vertical:"middle"};const d=ws.getCell(s+i*3+1,4);d.value="ad/soyad/imza";d.font={name:TN,size:10};d.border={top:TH};d.alignment={horizontal:"center"}});
+ ws.addImage(img,{tl:{col:.15,row:.45},ext:{width:290,height:35}});
+}
+async function exportAkt(){
+ const rs=aktRows();if(!rs.length)return toast("Fərq yoxdur");
+ try{
+  toast("Akt hazırlanır...");
+  const wb=new ExcelJS.Workbook(),img=wb.addImage({base64:"data:image/png;base64,"+LOGO,extension:"png"}),d=$("dp").value;
+  mkAkt(wb,rs,img);
+  const blob=new Blob([await wb.xlsx.writeBuffer()],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}),fn=`Ferq_akti_${d?d+"_":""}${dmy(meta.dt)}.xlsx`;
+  let dl=null;try{dl=window.claude&&await claude.use("downloads")}catch(e){}
+  if(dl){await dl.save({filename:fn,data:blob})}else{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fn;a.click()}
+  toast(`Akt export olundu: ${rs.length} sətir`);
+ }catch(e){if(e&&e.code=="declined")return toast("Ləğv edildi");toast("Export xətası: "+(e.message||e))}
+}
+$("ak0").onclick=()=>{$("gn").value=meta.gn||"";aktRender();$("ak").style.display="block"};
+$("akc").onclick=()=>$("ak").style.display="none";$("akx").onclick=exportAkt;
+$("al").oninput=e=>{const k=e.target.dataset.nk;if(k){notes[k]=e.target.value;save()}};
+$("gn").oninput=()=>{meta.gn=$("gn").value;save()};
+const idb=(m,k,v)=>new Promise(res=>{try{const o=indexedDB.open("sy",1);o.onupgradeneeded=()=>o.result.createObjectStore("kv");o.onsuccess=()=>{try{const s=o.result.transaction("kv",m=="get"?"readonly":"readwrite").objectStore("kv"),r=m=="get"?s.get(k):s.put(v,k);r.onsuccess=()=>res(r.result);r.onerror=()=>res(null)}catch(e){res(null)}};o.onerror=()=>res(null)}catch(e){res(null)}});
+let bm2=new Map(),cb=new Map();
+const nk=s=>{s=String(s).trim().toUpperCase();return/^\d+$/.test(s)?s.replace(/^0+/,""):s};
+function setBc(arr){bm2=new Map();cb=new Map();for(const e of arr){const k=nk(e[0]);if(!k)continue;let l=bm2.get(k);if(!l){l=[];bm2.set(k,l)}l.push(e);if(!cb.has(e[1]))cb.set(e[1],e[0])}fillB()}
+function fillB(){let n=0;base.forEach(r=>{if(!r.b&&cb.has(r.c)){r.b=String(cb.get(r.c));n++}});return n}
+function byBc(raw){const l=bm2.get(nk(raw));if(!l)return null;const e=l.find(x=>base.some(r=>r.c==x[1]))||l[0];return{c:e[1],n:e[2],g:e[3]}}
+async function loadBc(f){
+ try{toast("Barkod bazası oxunur... bir az çəkə bilər");await new Promise(r=>setTimeout(r,60));
+  const wb=XLSX.read(await f.arrayBuffer(),{type:"array",dense:true,cellStyles:false,cellNF:false,cellHTML:false});
+  const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:""});
+  const h=rows[0].map(x=>String(x).trim().toUpperCase()),B=h.indexOf("BARKOD_KOD"),C=h.indexOf("STOK_KOD"),N=h.indexOf("STOK_AD"),G=["URUN_KOD_1","URUN_KOD_2","URUN_KOD_3","URUN_KOD_4"].map(x=>h.indexOf(x));
+  if(B<0||C<0)throw new Error("BARKOD_KOD / STOK_KOD sütunu tapılmadı");
+  const arr=[];for(let i=1;i<rows.length;i++){const r=rows[i],b=String(r[B]).trim(),c=String(r[C]).trim();if(b&&c)arr.push([b,c,N<0?"":String(r[N]).trim(),G.map(j=>j<0?"":String(r[j]).replace(/\s+/g," ").trim())])}
+  setBc(arr);await idb("put","bc",arr);save();opts();render();toast(`Barkod bazası yükləndi: ${arr.length} sətir`);
+ }catch(e){toast("Xəta: "+e.message)}
+}
+$("bb").onclick=()=>$("fi3").click();$("fi3").onchange=e=>{if(e.target.files[0])loadBc(e.target.files[0]);e.target.value=""};
+async function saveBlob(blob,fn){
+ let dl=null;try{dl=window.claude&&await claude.use("downloads")}catch(e){}
+ if(dl){await dl.save({filename:fn,data:blob})}else{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fn;a.click()}
+ toast("Fayl hazırdır: "+fn);
+}
+async function sendCount(){
+ if(!Object.keys(cnt).length)return toast("Göndəriləcək sayım yoxdur");
+ let w=(meta.who||"").trim();if(!w){w=(prompt("Sayım edənin adı:","")||"").trim();if(!w)return;meta.who=w;$("wh").value=w;save()}
+ const rows=base.filter(r=>cnt[r.k]!=null).map(r=>({k:r.k,d:r.d,dn:r.dn,c:r.c,n:r.n,b:r.b||"",q:r.q,sh:r.sh,g:r.g||[],x:r.x?1:0}));
+ const o={app:"sayim",v:1,id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),who:w,fl:meta.fl,dt:meta.dt,ts:Date.now(),rows,cnt,ser,notes:Object.fromEntries(Object.entries(notes).filter(([k,v])=>cnt[k]!=null&&v))};
+ const hm=new Date().toTimeString().slice(0,5).replace(":","");
+ try{await saveBlob(new Blob([JSON.stringify(o)],{type:"application/json"}),`sayim_${w.replace(/[^\wəƏıİöÖüÜşŞçÇğĞ-]+/g,"_")}_${meta.dt}_${hm}.json`)}catch(e){if(e&&e.code=="declined")return toast("Ləğv edildi");toast("Xəta: "+(e.message||e))}
+}
+function renderMg(){$("mgl").innerHTML=mg.length?mg.map(m=>`✔ <b>${esc(m.who)}</b> · ${m.n} məhsul · ${m.tot} ədəd${m.ov?` · ${m.ov} üst-üstə`:""}`).join("<br>"):"Birləşdirilmiş fayl yoxdur"}
+async function recvFiles(files){
+ const rep=[];let ok=0;
+ for(const f of files){
+  let o;try{o=JSON.parse(await f.text())}catch(e){rep.push(f.name+": oxunmadı");continue}
+  if(o.app!="sayim"||!o.cnt){rep.push(f.name+": uyğun fayl deyil");continue}
+  if(mg.some(m=>m.id==o.id)){rep.push(esc(o.who)+": artıq birləşdirilib");continue}
+  const inc={...o.cnt},bk=new Map(base.map(r=>[r.k,r]));
+  for(const[sn,k]of Object.entries(o.ser||{})){if(ser[sn]){if(inc[k]>0)inc[k]=fm(inc[k]-1)}else ser[sn]=k}
+  let n=0,tot=0,ov=0;
+  for(const[k,v]of Object.entries(inc)){
+   if(!bk.has(k)){const r=(o.rows||[]).find(x=>x.k==k);if(!r)continue;const nr={...r,x:r.x?1:0};if(!nr.x)delete nr.x;base.push(nr);bk.set(k,nr)}
+   if(cnt[k]!=null)ov++;
+   cnt[k]=Math.max(0,fm((cnt[k]||0)+v));ts[k]=Math.max(ts[k]||0,o.ts||0);n++;tot+=v;
+  }
+  for(const[k,v]of Object.entries(o.notes||{}))if(!notes[k])notes[k]=v;
+  mg.push({id:o.id,who:o.who||"?",n,tot:fm(tot),ov});ok++;
+  rep.push(`${esc(o.who)}: ${n} məhsul, ${fm(tot)} ədəd${ov?`, ${ov} üst-üstə düşdü (toplandı)`:""}`);
+ }
+ save();opts();render();renderMg();
+ $("mw").hidden=false;$("mgl").innerHTML=rep.join("<br>")+"<hr>"+$("mgl").innerHTML;
+ if(ok)toast(`${ok} fayl birləşdirildi`);
+}
+$("sd").onclick=sendCount;
+$("mn").onclick=()=>{renderMg();$("mw").hidden=false};
+$("mx").onclick=()=>{$("mw").hidden=true};
+$("mw").onclick=e=>{if(e.target==$("mw"))$("mw").hidden=true};
+$("mp").addEventListener("click",e=>{const b=e.target.closest("button");if(b&&b.id&&b.id!="mx"&&b.id!="rc")setTimeout(()=>{$("mw").hidden=true},0)});
+$("rc").onclick=()=>$("fi4").click();
+$("fi4").onchange=e=>{if(e.target.files.length)recvFiles([...e.target.files]);e.target.value=""};
+$("wh").oninput=()=>{meta.who=$("wh").value;save()};
+async function loadBase(f){
+ try{
+  const wb=new ExcelJS.Workbook();await wb.xlsx.load(await f.arrayBuffer());
+  const ws=wb.worksheets[0],h={};ws.getRow(1).eachCell((c,i)=>h[String(V(c.value)).trim()]=i);
+  for(const k of["DEPO_KOD","STOK_KOD","STOK_AD","MIKTAR"])if(!h[k])throw new Error("Sütun tapılmadı: "+k);
+  const g=(r,k)=>h[k]?V(r.getCell(h[k]).value):"",m=new Map(),bh=Object.keys(h).find(k=>/barkod|barcode/i.test(k));
+  ws.eachRow((r,i)=>{if(i<2)return;const d=String(g(r,"DEPO_KOD")).trim(),c=String(g(r,"STOK_KOD")).trim();if(!d||!c)return;
+   const k=d+"|"+c,q=+g(r,"MIKTAR")||0;
+   if(m.has(k)){m.get(k).q+=q;return}
+   m.set(k,{k,d,dn:g(r,"DEPO_AD"),c,b:bh?String(g(r,bh)).trim():"",n:String(g(r,"STOK_AD")),q,sh:"",g:["URUN_GRUP_AD1","URUN_GRUP_AD2","URUN_GRUP_AD3","URUN_GRUP_AD4"].map(k=>String(g(r,k)).trim())})});
+  base=[...m.values(),...base.filter(r=>r.x&&!m.has(r.k))];setLv();fillB();save();opts();render();toast(`Baza yükləndi: ${m.size} sətir`);
+ }catch(e){toast("Xəta: "+e.message)}
+}
+const dmy=s=>s.split("-").reverse().join(".");
+const TN="Times New Roman",TH={style:"thin"},TB={left:TH,right:TH,top:TH,bottom:TH};
+function edges(ws,r1,c1,r2,c2,st,col){
+ for(let r=r1;r<=r2;r++)for(let c=c1;c<=c2;c++){const x=ws.getCell(r,c),b=Object.assign({},x.border||{}),e={style:st,color:{argb:col}};
+  if(r==r1)b.top=e;if(r==r2)b.bottom=e;if(c==c1)b.left=e;if(c==c2)b.right=e;x.border=b}
+}
+function mk(wb,name,rows,img){
+ const ws=wb.addWorksheet(shn(name),{views:[{showGridLines:false}],pageSetup:{paperSize:9,orientation:"landscape",fitToPage:true,fitToWidth:1,fitToHeight:0,printTitlesRow:"9:9",margins:{left:.24,right:.24,top:.65,bottom:.6,header:.28,footer:.28}},headerFooter:{oddHeader:"&L&F&C&A",oddFooter:"&LMəsul şəxs:_______________&C&P / &N"}});
+ ws.columns=[3.2,10.8,36,75,9.2,15,14].map(width=>({width}));
+ [4,5,6,7].forEach((r,i)=>ws.getRow(r).height=[14.25,18,18,14.25][i]);ws.getRow(9).height=33.75;
+ ws.mergeCells("D1:G3");ws.mergeCells("B5:C5");ws.mergeCells("B6:C6");ws.mergeCells("D5:G7");
+ const t=ws.getCell("D1");t.value="Həftəlik və Aylıq məhsul qalığının sayım forması";t.font={name:TN,size:13,bold:true,color:{argb:"FFFFFFFF"}};
+ t.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF333F50"}};t.alignment={horizontal:"center",vertical:"center"};
+ const b5=ws.getCell("B5");b5.value="Filial:"+meta.fl;b5.font={name:TN,size:14,bold:true};b5.alignment={vertical:"middle"};
+ const b6=ws.getCell("B6");b6.value="Tarix: "+dmy(meta.dt);b6.font=b5.font;b6.alignment=b5.alignment;
+ const R={name:TN,size:12,bold:true,color:{argb:"FFFF0000"}},K={name:TN,size:12};
+ const n=ws.getCell("D5");n.value={richText:[{text:"Qeyd : ",font:R},{text:"Mağazanın həftəlik və aylıq sayımı bu forma üzərindən aparılmalıdır. Retail Audit yoxlaması zamanı uyğunsuzluq ",font:K},{text:"(tarixsiz,imzasız)",font:R},{text:" aşkarlanarsa sayım qeydə alınmayacaq.",font:K}]};
+ n.alignment={horizontal:"left",vertical:"middle",wrapText:true};
+ edges(ws,1,2,7,7,"medium","FF000000");edges(ws,5,4,7,7,"medium","FFFF0000");
+ ["Depo","Stok Kodu","Stok Adı","Stok\nMiqdarı","Faktiki sayılan","Qeyd"].forEach((h,i)=>{const c=ws.getCell(9,i+2);c.value=h;c.font={name:TN,size:10,bold:true};c.border=TB;c.alignment={horizontal:"center",vertical:"middle",wrapText:true};
+  c.fill={type:"gradient",gradient:"angle",degree:90,stops:[{position:0,color:{argb:"FFFFFFFF"}},{position:1,color:{argb:"FFF4B183"}}]}});
+ rows.forEach((x,i)=>{const r=10+i,f=cnt[x.k]||0,row=ws.getRow(r);row.height=15.75;
+  row.values=[null,x.d,x.c,x.n,x.q,f,{formula:`IF(E${r}=F${r},"OK","NOT OK")`,result:f==x.q?"OK":"NOT OK"}];
+  for(let c=2;c<=7;c++){const e=ws.getCell(r,c);e.border=TB;e.font={name:c==2?TN:"Calibri",size:11};if(c>4)e.alignment={horizontal:"center",vertical:"middle"}}});
+ const L=9+rows.length;ws.autoFilter=`B9:G${L}`;
+ const s=L+3;[["Məsul şəxs :",12],["MƏMT : ",12],["MSM :",12]].forEach(([tx,sz],i)=>{
+  const a=ws.getCell(s+i*3,3);a.value=tx;a.font={name:TN,size:sz};a.alignment={horizontal:"right",vertical:"middle"};
+  const d=ws.getCell(s+i*3+1,4);d.value="ad/soyad/imza";d.font={name:TN,size:10};d.border={top:TH};d.alignment={horizontal:"center",vertical:"middle"}});
+ ws.addImage(img,{tl:{col:1.1,row:.4},ext:{width:364,height:44}});
+}
+async function exportX(){
+ const d=$("dp").value,c=$("ct").value,sc=base.filter(r=>(!d||r.d==d)&&(!c||r.sh==c)),used=[[c||d||"Sayım",sc]];
+ if(!sc.some(r=>cnt[r.k]!=null))return toast("Seçilmiş ambar/kateqoriya üzrə sayılmış məhsul yoxdur");
+ try{
+  toast("Excel hazırlanır...");
+  const wb=new ExcelJS.Workbook(),img=wb.addImage({base64:"data:image/png;base64,"+LOGO,extension:"png"});
+  for(const[s,rs]of used)mk(wb,s,rs.slice().sort((a,b)=>(a.n||a.c).localeCompare(b.n||b.c,"az")),img);
+  const blob=new Blob([await wb.xlsx.writeBuffer()],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}),fn=`Sayim_akti_${d?d+"_":""}${c?c.replace(/[^\wə-ʯ]+/g,"-")+"_":""}${dmy(meta.dt)}.xlsx`;
+  let dl=null;try{dl=window.claude&&await claude.use("downloads")}catch(e){}
+  if(dl){await dl.save({filename:fn,data:blob})}
+  else{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fn;a.click()}
+  toast(`Export: ${used[0][1].length} sətir`);
+ }catch(e){if(e&&e.code=="declined")return toast("Ləğv edildi");toast("Export xətası: "+(e.message||e))}
+}
+document.addEventListener("click",e=>{
+ const b=e.target.closest("button");if(!b)return;
+ if(b.dataset.sk)return pick(b.dataset.sk);
+ if(b.id=="mo"){lim+=100;return render()}
+ const it=b.closest(".it"),a=b.dataset.a;
+ if(it&&a){const k=it.dataset.k;
+  if(a=="p")add(k,Q());
+  else if(a=="m"){if(cnt[k]>0)add(k,-1)}
+  else{const v=prompt("Dəqiq say:",cnt[k]??0);if(v!==null&&!isNaN(parseFloat(v))){const n=Math.max(0,parseFloat(v));add(k,n-(cnt[k]||0))}}}
+ if(b.dataset.f){flt=b.dataset.f;document.querySelectorAll(".ch").forEach(c=>c.classList.toggle("on",c==b));lim=80;render()}
+});
+$("bl").onclick=()=>$("fi").click();$("fi").onchange=e=>{if(e.target.files[0])loadBase(e.target.files[0]);e.target.value=""};
+$("ex").onclick=exportX;$("ud").onclick=undo;
+$("rs").onclick=()=>{if(confirm("Bütün sayım nəticələri silinsin? (baza qalır)")){cnt={};ser={};ts={};notes={};mg=[];hist=[];base=base.filter(r=>!r.x);save();render()}};
+$("s").oninput=()=>{sel=null;$("sl").textContent="";lim=80;renderSug()};$("s").onkeydown=e=>{if(e.key=="Enter")sel?doSay():submit()};$("q").onkeydown=e=>{if(e.key=="Enter")doSay()};
+$("dp").onchange=$("ct").onchange=()=>{lim=80;render()};
+$("fl").oninput=()=>{meta.fl=$("fl").value;save()};$("dt").onchange=()=>{meta.dt=$("dt").value||meta.dt;save()};$("ia").onchange=()=>{meta.ia=$("ia").checked;save()};
+restore();$("fl").value=meta.fl;$("dt").value=meta.dt;$("ia").checked=meta.ia;$("wh").value=meta.who||"";setLv();opts();render();
+idb("get","bc").then(a=>{if(a&&a.length){setBc(a);save();opts();render()}});
+</script>
+</body>
+</html>
